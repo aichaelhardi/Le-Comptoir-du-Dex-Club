@@ -50,8 +50,23 @@ export function el(tag, className = "", text = "") {
  */
 export function renderTypes(counts, activeType) {
   // TODO 1. Videz #types
+  const typescontainer =document.getElementById("types");
+  typescontainer.innerHTML= "" ;
   // TODO 2. Créez le bouton « Tous (…) »
+  const buttonTous = document.createElement("button");
+  buttonTous.textContent ="Tous";
+  buttonTous.dataset.type ="Tous";
+  typescontainer.appendChild(buttonTous);
   // TODO 3. Pour chaque type de counts (for...in ou Object.keys), créez un bouton
+  for(const type in counts){
+    const button = document.createElement("button");
+    button.textContent = type + "(" + counts[type] + ")" ;
+    button.dataset.type = type;
+    if(type === activeType){
+      button.classList.add("is-active");
+    }
+    typescontainer.appendChild(button);
+  }
 }
 
 /**
@@ -84,8 +99,44 @@ export function renderCount(n) {
  */
 export function renderGrid(list, cart) {
   // TODO 1. Videz #grid
+  const grid = document.getElementById("grid");
+  grid.innerHTML ="";
   // TODO 2. Liste vide : ajoutez le message et arrêtez (return)
+  if(list.length === 0){
+    grid.innerHTML ="<p class='empty'>Aucune carte trouvée</p>"
+    return;
+  }
   // TODO 3. Pour chaque carte : créez l'article et ses enfants, puis grid.append(article)
+  list.forEach(function(card) {
+    const article = document.createElement("article");
+    article.className ="card";
+    article.dataset.id = card.id;
+    const selected = cart.some(function(item){
+      return item.id === card.id;
+    });
+    if(selected){
+      article.classList.add("is-selected");
+    }
+    //verifier stock
+    if(card.stock === 0){
+      article.classList.add("out-of-stock");
+    }
+    article.innerHTML =`<img class="card_img" src="${card.image}" alt="${card.name}>
+    <p class="card_num">#${card.id} </p>
+    <h3 class="card_name">${card.name} </h3>
+    <p class="card_meta">
+    <span>${card.type}</span>
+    <span>${card.rarity}</span>
+    </p>
+    <p class="card_price">${card.price} DH </p>    
+    <button class="btn btn--primary"
+    type="button
+    data-add="${card.id}" ${card.stock === 0 ? "disabled" : ""} 
+    >
+    Ajouter
+    </button>    `;
+    grid.appendChild(article) ;
+  });
 }
 
 /**
