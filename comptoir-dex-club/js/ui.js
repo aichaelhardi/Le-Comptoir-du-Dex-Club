@@ -58,8 +58,13 @@ export function renderTypes(counts, activeType) {
  * Affiche le nombre de cartes visibles dans #count : "5 cartes", "1 carte" ou "Aucune carte".
  */
 export function renderCount(n) {
-  // TODO
-}
+ const cards = cards.map(card => {
+  const cardElement = document.createElement("grid")
+  cardElement.className = "pokemon-card";
+  const innerHTML ="";
+
+ });
+};
 
 /**
  * Affiche les cartes dans #grid.

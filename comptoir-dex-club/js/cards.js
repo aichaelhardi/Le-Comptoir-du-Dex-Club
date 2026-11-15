@@ -34,7 +34,12 @@ export function searchCards(cards, term) {
  */
 export function filterByType(cards, type) {
   // TODO
-  return [];
+  if (type === "tous"){
+    return[...cards];
+  }
+  return cards.filter(function(carte){
+    return carte.type === type
+  });
 }
 
 /**
