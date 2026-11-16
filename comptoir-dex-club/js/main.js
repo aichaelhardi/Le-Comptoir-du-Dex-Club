@@ -43,43 +43,110 @@ function refresh() {
 // PALIER 1
 // =============================================================
 
+
 // Recherche : à chaque frappe
-searchInput.addEventListener("input", () => {
+searchInput.addEventListener("input", function() {
   // TODO : mettez à jour state.filters.term avec la valeur du champ, puis refresh()
+
+  state.filters.term = searchInput.value;
+  refresh();
 });
 
 // Types : UN SEUL écouteur sur #types (délégation)
-typesBox.addEventListener("click", (event) => {
+typesBox.addEventListener("click", function(event) {
+
   // TODO 1. Retrouvez le bouton cliqué : event.target.closest("[data-type]")
+  const bouton = event.target.closest("[data-type]");
+
   // TODO 2. Si on a cliqué à côté d'un bouton, on s'arrête (return)
+  if (!bouton) {
+    return;
+  }
+
   // TODO 3. state.filters.type = bouton.dataset.type ; refresh()
+  state.filters.type = bouton.dataset.type;
+  refresh();
+
 });
 
 // Grille : UN SEUL écouteur sur #grid (délégation)
-grid.addEventListener("click", (event) => {
-  // PALIER 2 — bouton « Ajouter » (à faire AVANT la fiche, et terminer par return
-  //            pour que le clic sur le bouton n'ouvre pas la fiche) :
+grid.addEventListener("click", function(event) {
+
+  // PALIER 2 — bouton « Ajouter » (à faire AVANT la fiche, et terminer par return)
+
   // TODO a. const addButton = event.target.closest("[data-add]")
-  // TODO b. Si addButton existe : state.cart = dataCart.addToCart(state.cart, Number(addButton.dataset.add), state.cards) ;
-  //         refresh() ; return
+  const addButton = event.target.closest("[data-add]");
+
+  // TODO b.
+  if (addButton) {
+    state.cart = dataCart.addToCart(
+      state.cart,
+      Number(addButton.dataset.add),
+      state.cards
+    );
+
+    refresh();
+    return;
+  }
 
   // PALIER 1 — fiche de la carte :
+
   // TODO 1. const cardEl = event.target.closest(".card") ; si rien, return
-  // TODO 2. Retrouvez la carte avec dataCart.findCard(state.cards, Number(cardEl.dataset.id))
+  const cardEl = event.target.closest(".card");
+
+  if (!cardEl) {
+    return;
+  }
+
+  // TODO 2. Retrouvez la carte
+  const carte = dataCart.findCard(
+    state.cards,
+    Number(cardEl.dataset.id)
+  );
+
   // TODO 3. ui.renderDetail(carte)
+  ui.renderDetail(carte);
+
 });
+
 
 // =============================================================
 // PALIER 2
 // =============================================================
 
+
 // Panier : UN SEUL écouteur sur #cart-list (délégation)
-cartList.addEventListener("click", (event) => {
-  // TODO 1. const button = event.target.closest("[data-action]") ; si rien, return
-  // TODO 2. const id = Number(button.closest(".cart-line").dataset.id)
-  // TODO 3. Selon button.dataset.action ("plus", "minus", "remove") :
-  //         changeQuantity(… +1 …), changeQuantity(… -1 …) ou removeFromCart(…)
-  // TODO 4. refresh()
+cartList.addEventListener("click", function(event) {
+
+  // TODO 1.
+  const button = event.target.closest("[data-action]");
+
+  if (!button) {
+    return;
+  }
+
+  // TODO 2.
+  const ligne = button.closest(".cart-line");
+  const id = Number(ligne.dataset.id);
+
+  // TODO 3.
+  if (button.dataset.action === "plus") {
+
+    state.cart = dataCart.changeQuantity(state.cart, id, 1);
+
+  } else if (button.dataset.action === "minus") {
+
+    state.cart = dataCart.changeQuantity(state.cart, id, -1);
+
+  } else if (button.dataset.action === "remove") {
+
+    state.cart = dataCart.removeFromCart(state.cart, id);
+
+  }
+
+  // TODO 4.
+  refresh();
+
 });
 
 // =============================================================

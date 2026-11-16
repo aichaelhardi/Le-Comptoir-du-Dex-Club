@@ -11,7 +11,12 @@
  */
 export function findCard(cards, id) {
   // TODO : cards.find(...)
-  return undefined;
+    const carte = cards.find(function(card) {
+    return card.id === id;
+  });
+
+  return carte;
+
 }
 
 /**
@@ -23,12 +28,43 @@ export function findCard(cards, id) {
  */
 export function addToCart(cart, id, cards) {
   // TODO 1. Retrouvez la carte (findCard) et la ligne du panier (cart.find)
+    const carte = findCard(cards, id);
+
+  const ligne = cart.find(function(item) {
+    return item.id === id;
+  });
   // TODO 2. Ligne trouvée : si quantite < stock, renvoyez cart.map(...) avec la quantité + 1 ;
   //         pour modifier une ligne sans toucher l'originale : { ...ligne, quantite: ligne.quantite + 1 }
+   if (ligne) {
+
+    if (ligne.quantite < carte.stock) {
+
+      return cart.map(function(item) {
+        if (item.id === id) {
+          return { ...item, quantite: item.quantite + 1 };
+        } else {
+          return item;
+        }
+      });
+
+    } else {
+      return cart;
+    }
+
+  }
   // TODO 3. Pas de ligne : si stock > 0, renvoyez [...cart, { id, quantite: 1 }]
+  
+  else if (carte.stock > 0) {
+    return [...cart, { id: id, quantite: 1 }];
+  }
+
   // TODO 4. Sinon, renvoyez cart sans rien changer
-  return [];
+    else {
+    return cart;
+  }
 }
+  
+
 
 /**
  * Change la quantité d'une ligne de `delta` (+1 ou -1).

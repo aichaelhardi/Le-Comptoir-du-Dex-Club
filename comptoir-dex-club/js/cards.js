@@ -49,7 +49,12 @@ export function filterByType(cards, type) {
  */
 export function getVisibleCards(cards, filters) {
   // TODO : appelez filterByType, puis searchCards sur le résultat
-  return [];
+    let cartesFiltrees = filterByType(cards, filters.type);
+
+  let resultat = searchCards(cartesFiltrees, filters.term);
+
+  return resultat;
+
 }
 
 /**
@@ -58,8 +63,19 @@ export function getVisibleCards(cards, filters) {
  */
 export function countByType(cards) {
   // TODO 1. Créez un objet vide : const counts = {};
+    const counts = {};
   // TODO 2. Pour chaque carte : si counts[carte.type] n'existe pas, mettez 0, puis ajoutez 1
+    cards.forEach(function(carte) {
+
+    if (counts[carte.type]) {
+      counts[carte.type] = counts[carte.type] + 1;
+    } else {
+      counts[carte.type] = 1;
+    }
+
+  });
   // TODO 3. Renvoyez counts
+    return counts;
   return {};
 }
 

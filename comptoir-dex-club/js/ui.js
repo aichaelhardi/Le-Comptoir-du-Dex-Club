@@ -73,13 +73,14 @@ export function renderTypes(counts, activeType) {
  * Affiche le nombre de cartes visibles dans #count : "5 cartes", "1 carte" ou "Aucune carte".
  */
 export function renderCount(n) {
- const cards = cards.map(card => {
-  const cardElement = document.createElement("grid")
-  cardElement.className = "pokemon-card";
-  const innerHTML ="";
-
- });
-};
+  if (n === 0) {
+    count.textContent = "Aucune carte";
+  } else if (n === 1) {
+    count.textContent = "1 carte";
+  } else {
+    count.textContent = n + " cartes";
+  }
+}
 
 /**
  * Affiche les cartes dans #grid.
@@ -121,20 +122,25 @@ export function renderGrid(list, cart) {
     if(card.stock === 0){
       article.classList.add("out-of-stock");
     }
-    article.innerHTML =`<img class="card_img" src="${card.image}" alt="${card.name}>
-    <p class="card_num">#${card.id} </p>
-    <h3 class="card_name">${card.name} </h3>
-    <p class="card_meta">
+   article.innerHTML = `
+  <img class="card__img" src="${card.image}" alt="${card.name}">
+  <p class="card__num">#${card.id}</p>
+  <h3 class="card__name">${card.name}</h3>
+
+  <p class="card__meta">
     <span>${card.type}</span>
     <span>${card.rarity}</span>
-    </p>
-    <p class="card_price">${card.price} DH </p>    
-    <button class="btn btn--primary"
-    type="button
-    data-add="${card.id}" ${card.stock === 0 ? "disabled" : ""} 
-    >
+  </p>
+
+  <p class="card__price">${card.price} DH</p>
+
+  <button class="btn btn--primary"
+    type="button"
+    data-add="${card.id}"
+    ${card.stock === 0 ? "disabled" : ""}>
     Ajouter
-    </button>    `;
+  </button>
+`;
     grid.appendChild(article) ;
   });
 }
@@ -170,6 +176,76 @@ export function renderDetail(card) {
  */
 export function renderCart(cart, cards, total, nbCards) {
   // TODO
+  export function renderCart(cart, cards, total, nbCards) {
+  // TODO
+
+  cartList.innerHTML = "";
+
+  // Nombre de cartes
+  if (nbCards === 1) {
+    cartCountEl.textContent = "1 carte";
+  } else {
+    cartCountEl.textContent = nbCards + " cartes";
+  }
+
+  // Total
+  cartTotalEl.textContent = total + " DH";
+
+  // Si le panier est vide
+  if (cart.length === 0) {
+    const message = document.createElement("li");
+    message.className = "empty";
+    message.textContent = "Votre panier est vide";
+    cartList.appendChild(message);
+    return;
+  }
+
+  // Afficher les cartes
+  cart.forEach(function(item) {
+
+    const carte = cards.find(function(card) {
+      return card.id === item.id;
+    });
+
+    const ligne = document.createElement("li");
+    ligne.className = "cart-line";
+    ligne.dataset.id = item.id;
+
+    const nom = document.createElement("span");
+    nom.textContent = carte.name;
+
+    const moins = document.createElement("button");
+    moins.textContent = "-";
+    moins.dataset.action = "minus";
+    moins.type = "button";
+
+    const quantite = document.createElement("span");
+    quantite.textContent = item.quantite;
+
+    const plus = document.createElement("button");
+    plus.textContent = "+";
+    plus.dataset.action = "plus";
+    plus.type = "button";
+
+    if (item.quantite >= carte.stock) {
+      plus.disabled = true;
+    }
+
+    const supprimer = document.createElement("button");
+    supprimer.textContent = "Retirer";
+    supprimer.dataset.action = "remove";
+    supprimer.type = "button";
+
+    ligne.appendChild(nom);
+    ligne.appendChild(moins);
+    ligne.appendChild(quantite);
+    ligne.appendChild(plus);
+    ligne.appendChild(supprimer);
+
+    cartList.appendChild(ligne);
+
+  });
+}
 }
 
 // -------------------------------------------------------------
